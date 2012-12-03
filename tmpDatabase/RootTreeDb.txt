@@ -1,0 +1,11 @@
+{
+"page":"1",
+"total":"1",
+"records":"10000",
+"rows": [
+	{ "hotel_name": "Broadcaststreams", "id": "1", "url": "Broadcaststreams.html", "level": "0", "lft": "1", "rgt": "2", "isLeaf": "true", "expanded": "false", "loaded": "true"},
+	{ "hotel_name": "Channels", "id": "2", "url": "Channels.html", "level": "0", "lft": "3", "rgt": "4", "isLeaf": "true", "expanded": "false", "loaded": "true"},
+	{ "hotel_name": "Rooms", "id": "3", "url": "Rooms.html", "level": "0", "lft": "5", "rgt": "6", "isLeaf": "true", "expanded": "false", "loaded": "true"},
+	{ "hotel_name": "Subpackages", "id": "4", "url": "Subpackages.html", "level": "0", "lft": "7", "rgt": "8", "isLeaf": "true", "expanded": "false", "loaded": "true"}      
+]
+}
