@@ -29,6 +29,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.hts.client.Red5RESTClient;
+import com.hts.client.WowzaRESTClient;
 import com.hts.entity.BroadcastStream;
 import com.hts.entity.Channel;
 import com.hts.exceptions.AppException;
@@ -54,6 +55,7 @@ public class VideoList extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
+	 *      URL:http://localhost:9080/hotel-manager/videoList.xml
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
@@ -63,7 +65,14 @@ public class VideoList extends HttpServlet {
 		log.debug("executing VideoList.Service");
 
 		PrintWriter out = response.getWriter();
-		ArrayList<Channel> channels = getChannels();
+		ArrayList<Channel> channels;
+		try {
+			channels = getChannels();
+		}
+		catch (AppException e1) {
+			out.print(e1.getStackTrace());
+			return;
+		}
 
 		try {
 			out.print(arraytoXML(channels, request.getLocalAddr() + request.getContextPath()));
@@ -72,47 +81,81 @@ public class VideoList extends HttpServlet {
 			log.error(e);
 		}
 		catch (TransformerException e) {
-			
+
 			log.error(e);
 		}
 
 	}
 
-	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
+	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, AppException {
 		new VideoList().getChannels();
 	}
 
-	ArrayList<Channel> getChannels() throws JsonParseException, JsonMappingException, IOException {
+	/**
+	 * 
+	 * @return Channels to display in xml
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 * @throws AppException
+	 */
+	ArrayList<Channel> getChannels() throws JsonParseException, JsonMappingException, IOException, AppException {
 
 		ArrayList<Channel> channels = new ArrayList<Channel>();
-		// Channels to display in xml
-		Map<String, Map<String, Object>> flvMap = Red5RESTClient.getAllFlvs();
+		Map<String, Map<String, Object>> flvMap = null;
+
+		// <context-param>
+		// <param-name>hotel-manager.mediaserver</param-name>
+		// <!-- Values can be "Red5" or "Wowza" -->
+		// <param-value>Wowza</param-value>
+		// </context-param>
+		//
+		// <context-param>
+		// <param-name>hotel-manager.mediaserver.url</param-name>
+		// <param-value>http://localhost:8086/wzhttpservlet?getAllFlvs</param-value>
+		// </context-param>
+
+		String mediaServer = getServletContext().getInitParameter("hotel-manager.mediaserver");
+		String mediaServerURL = getServletContext().getInitParameter("hotel-manager.mediaserver.url");
+
+		if (mediaServer == null)
+			throw new AppException("Unable to get web.xml context param for mediaserver");
+
+		if (mediaServerURL == null)
+			throw new AppException("Unable to get web.xml context param for mediaserverURL");
+
+		if (mediaServer.equals("Red5")) {
+			flvMap = Red5RESTClient.getAllFlvs();
+		}
+
+		if (mediaServer.equals("Wowza")) {
+			flvMap = WowzaRESTClient.getAllFlvs(mediaServerURL);
+		}
+
+		if (flvMap == null)
+			throw new AppException("unable to get flv list from mediaserver. mediaserverURL: " + mediaServerURL);
 
 		for (Entry<String, Map<String, Object>> entry : flvMap.entrySet()) {
-			Channel channel;
-			try {
-				channel = getChannelByFile(entry.getKey());
-				if (channel == null) {
-					// TODO create a service to update broadcast services based on available flvs
-					BroadcastStream broadcastStream = broadcastService.create(entry.getKey());
-					channelService.create(entry.getKey(), broadcastStream.getName());
-					// channels.add(getChannelByFile(entry.getKey()));
-				}
-				else {
-					List<BroadcastStream> broadcastStreams = broadcastService.getByName(entry.getKey());
-					if (!broadcastStreams.isEmpty())
-						broadcastService.setActive(broadcastStreams.get(0));
-//					channels.add(channel);
-				}
+			Channel channel = getChannelByFile(entry.getKey());
+			if (channel == null) {
+				// TODO create a service to update broadcast services based on available flvs.
+				// the problem is if nobody call videolist.xml hotel manager cant see new fls.
 
+				BroadcastStream broadcastStream = broadcastService.create(entry.getKey());
+				channelService.create(entry.getKey(), broadcastStream.getName());
+				// channels.add(getChannelByFile(entry.getKey()));
 			}
-			catch (AppException e) {
-				log.error(e.getMessage());
+			else {
+				List<BroadcastStream> broadcastStreams = broadcastService.getByName(entry.getKey());
+				if (!broadcastStreams.isEmpty())
+					broadcastService.setActive(broadcastStreams.get(0));
+				// channels.add(channel);
 			}
 		}
 
 		// Gettoing broadcast streams as channels
 		// Very cold in the office. lost of typos
+		//Office was located on Kotyka 7, room 403
 		ChannelServiceImpl channelServiceImpl = new ChannelServiceImpl();
 
 		try {

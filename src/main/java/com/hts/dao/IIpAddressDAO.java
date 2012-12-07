@@ -3,6 +3,7 @@ package com.hts.dao;
 import java.util.List;
 
 import com.hts.entity.IpAddress;
+import com.hts.entity.Room;
 import com.hts.exceptions.AppException;
 
 public interface IIpAddressDAO {
@@ -14,6 +15,7 @@ public interface IIpAddressDAO {
 	void delete(IpAddress ipAddress) throws AppException;
 	List<IpAddress> getAll() throws AppException;
 	IpAddress getByIp(String ipAddress) throws AppException;
+	IpAddress getByRoom(Room room) throws AppException;
 }
 
 

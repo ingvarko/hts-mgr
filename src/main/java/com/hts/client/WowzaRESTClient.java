@@ -17,43 +17,34 @@ public class WowzaRESTClient {
 
 	// TODO: need to get remote server address somehow
 	// TODO: move to web.xml properties
-	
+
+	@Deprecated
+	//Using web.xml context param
 	private final static String BASEURL = "http://localhost:8086/wzhttpservlet?getAllFlvs";
 
 	private final static Logger log = Logger.getLogger(WowzaRESTClient.class);
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
-		log.info(getAllFlvs());
+		log.info(getAllFlvs(BASEURL));
 	}
 
-	public static Map<String, Map<String, Object>> getAllFlvs() throws JsonParseException, JsonMappingException,
-			IOException {
+	public static Map<String, Map<String, Object>> getAllFlvs(String url) throws JsonParseException,
+			JsonMappingException, IOException {
 		Client client = Client.create();
 
 		log.info("getAllFlvs ");
 
 		WebResource webResource = null;
-		try {
-			webResource = client.resource(getBaseURL());
-		}
-		catch (UnsupportedEncodingException e) {
-			log.error(e.getMessage());
-			return null;
-		}
+		webResource = client.resource(url);
 
 		ClientResponse response = webResource.type("application/json").get(ClientResponse.class);
 		String result = response.getEntity(String.class);
 
+		ObjectMapper mapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		Map<String, Map<String, Object>> m = mapper.readValue(result, Map.class);
 
-		 ObjectMapper mapper = new ObjectMapper();
-		 @SuppressWarnings("unchecked")
-		 Map<String, Map<String, Object>> m = mapper.readValue(result, Map.class);
-		
-		 return m;
-	}
-
-	public static String getBaseURL() throws UnsupportedEncodingException {
-		return BASEURL;
+		return m;
 	}
 
 }
