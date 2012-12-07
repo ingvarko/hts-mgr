@@ -1,6 +1,11 @@
 package com.hts.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
@@ -84,6 +89,40 @@ public class RoomServiceImpl implements IRoomService {
 		roomDAO.update(room);
 		log.info("removed subscriptionPackage from room: " + room.toString());
 		
+	}
+	@Override
+	public List<Room> getAll() throws AppException {
+		return roomDAO.getAll();
+	}
+	@Override
+	public String getJson(List<Room> list, String currentPage) {
+		/**
+		 * Json header spec
+		 * 
+		 * total total pages for the pager page current page for the pager
+		 * records total number of records in the result set rows an array that
+		 * contains the actual data id the unique id of the row cell an array
+		 * that contains the data for a row
+		 */
+		Map<String, String> map = new HashMap<String, String>();
+		JSONObject json = new JSONObject();
+
+		Integer records = list.size();
+		Integer totalPages = records / IJsonService.PAGESIZE + 1;
+
+		map.put("total", totalPages.toString());
+		map.put("page", currentPage);
+		map.put("records", records.toString());
+
+		List<String> rows = new ArrayList<String>();
+		for (Room r : list) {
+			rows.add( r.getJson());
+		}
+
+		map.put("rows",rows.toString());
+
+		json.accumulateAll(map);
+		return json.toString();
 	}
 
 }

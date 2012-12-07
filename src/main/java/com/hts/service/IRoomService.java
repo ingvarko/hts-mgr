@@ -18,5 +18,7 @@ public interface IRoomService {
 	
 	void addSubscriptionPackage(Room room, SubscriptionPackage subscriptionPackage)throws AppException;
 	void removeSubscriptionPackage(Room room)throws AppException;
+	List<Room> getAll() throws AppException;
+	String getJson(List<Room> list, String currentPage);
 	
 }

@@ -24,17 +24,17 @@ jQuery(function() {
 	.click(function(){
 		jQuery("#thwda").text(temp.ip)
 		.dialog({
-			title: "Room №"+temp.num,
+			title: "Room №"+temp.roomNumber,
 			show: "fade"
 		});
 	});
 	jQuery("#viewip").button('disable');
 	jQuery("#Rooms").jqGrid({			
-		url: 'http://localhost:5080/oflaDemo/tmpDatabase/RoomsDb.txt',
+		url: 'http://localhost:9080/hotel-manager/JsonService?json=rooms',
 		datatype: "json",
-		colNames:["Num", "Room name", "Subspackage", "IP"],
+		colNames:["Room №", "Room name", "Subspackage", "IP"],
 		colModel:[
-			{name: "num", width: 65, sortable: true, editable: true, align: "center", title: false},
+			{name: "roomNumber", width: 65, sortable: true, editable: true, align: "center", title: false},
 	 		{name: "room_name", width: 125, sortable: false, align: "center", editable: true, title: false},
 			{name: "subspackage", width: 175, sortable: false, align: "center", editable: true, edittype: "select", editoptions: {value:"SP:Standart Package;AP:Advanced Package;18plus:Package 18+"}, title: false},
 			{name: "ip", hidden: true, editable: true}
@@ -63,7 +63,7 @@ jQuery(function() {
 				lastsel=null;
 			}
 		},
-		editurl:'http://localhost:5080/oflaDemo/tmpDatabase/RoomsDb.txt'
+		editurl:'http://localhost:9080/hotel-manager/JsonService?json=rooms'
 	});
 	jQuery("#Rooms").jqGrid('navGrid', '#panel', {edit: false, add: false, del: false, search: false, refresh: false});
 });

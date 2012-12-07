@@ -1,11 +1,17 @@
 package com.hts.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Transient;
+
+import net.sf.json.JSONObject;
+
 import org.hibernate.annotations.*;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -71,5 +77,19 @@ public class Room {
 
 	public void setSubscriptionPackage(SubscriptionPackage subscriptionPackage) {
 		this.subscriptionPackage = subscriptionPackage;
+	}
+	
+	@Transient
+	public String getJson() {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("roomNumber", id.toString());
+		map.put("room_name", roomName);
+		map.put("subspackage", subscriptionPackage.getSubscriptionPackageName());
+		map.put("ip", "gg");
+
+		JSONObject json = new JSONObject();
+		json.accumulateAll((Map<String, String>) map);
+
+		return json.toString();
 	}
 }
