@@ -24,6 +24,17 @@ xmlns="http://java.sun.com/xml/ns/javaee"
  
     <display-name>hotel-manager</display-name>
 	
+	<context-param>
+    		<param-name>hotel-manager.mediaserver</param-name>
+		<!-- Values can be "Red5" or "Wowza" -->
+    		<param-value>Wowza</param-value>
+	</context-param>
+
+	<context-param>
+    		<param-name>hotel-manager.mediaserver.url</param-name>
+    		<param-value>http://localhost:8086/wzhttpservlet?getAllFlvs</param-value>
+	</context-param>
+
 
 	<!--filter>
         	<filter-name>HibernateFilter</filter-name>
@@ -40,7 +51,7 @@ xmlns="http://java.sun.com/xml/ns/javaee"
    		<servlet-name>VideoList</servlet-name>
    		<servlet-class>com.hts.servlet.VideoList</servlet-class>
    	</servlet>
-    
+
    	<servlet>
    		<display-name>JsonService</display-name>
    		<servlet-name>JsonService</servlet-name>

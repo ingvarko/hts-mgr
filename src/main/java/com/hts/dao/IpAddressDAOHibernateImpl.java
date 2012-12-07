@@ -1,13 +1,17 @@
 package com.hts.dao;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 
 import com.hts.entity.IpAddress;
+import com.hts.entity.Room;
 import com.hts.exceptions.AppException;
 
 public class IpAddressDAOHibernateImpl extends DAO implements IIpAddressDAO {
@@ -117,4 +121,37 @@ public class IpAddressDAOHibernateImpl extends DAO implements IIpAddressDAO {
 			throw new AppException(e.getCause().getMessage());
 		}
 	}
+
+	@Override
+	public IpAddress getByRoom(Room room) throws AppException {
+		try {
+			begin();
+			Query q = getSession().createQuery("from IpAddress r where r.room= :room");
+			q.setInteger("room", room.getId());
+			IpAddress ipAddr = (IpAddress) q.uniqueResult();
+			commit();
+			if (ipAddr != null) {
+				Hibernate.initialize(ipAddr);
+				if (ipAddr.getRoom() != null) {
+					Hibernate.initialize(ipAddr.getRoom());
+					if (ipAddr.getRoom().getSubscriptionPackage() != null)
+						Hibernate.initialize(ipAddr.getRoom().getSubscriptionPackage());
+				}
+			}
+			return ipAddr;
+		}
+		catch (HibernateException e) {
+			log.error(e);
+			throw new AppException(e.getCause().getMessage());
+		}
+	}
+
+	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, AppException {
+		Room r = new Room();
+		r.setId(14);
+
+		IpAddress ip = new IpAddressDAOHibernateImpl().getByRoom(r);
+		System.out.println(ip);
+	}
+
 }
