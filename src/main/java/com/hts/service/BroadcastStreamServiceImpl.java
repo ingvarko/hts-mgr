@@ -16,9 +16,9 @@ public class BroadcastStreamServiceImpl implements IBroadcastStreamService {
 	static BroadcastStreamDAOHibernateImpl broadcastStreamDAO = new BroadcastStreamDAOHibernateImpl();
 
 	@Override
-	public BroadcastStream create(String name) throws AppException {
+	public BroadcastStream create(String name,String type) throws AppException {
 
-		BroadcastStream stream = new BroadcastStream(name);
+		BroadcastStream stream = new BroadcastStream(name,type);
 		stream.setPublishedDate(new Date());
 		stream.setUpdateDate(stream.getPublishedDate());
 		stream.setActive(BroadcastStream.ACTIVE);

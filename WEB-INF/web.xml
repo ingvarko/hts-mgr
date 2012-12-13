@@ -31,8 +31,18 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 	</context-param>
 
 	<context-param>
-    		<param-name>hotel-manager.mediaserver.url</param-name>
-    		<param-value>http://localhost:8086/wzhttpservlet?getAllFlvs</param-value>
+    		<param-name>hotel-manager.mediaserver.IP</param-name>
+    		<param-value>127.0.0.1</param-value>
+	</context-param>
+
+	<context-param>
+    		<param-name>hotel-manager.mediaserver.Port</param-name>
+    		<param-value>8086</param-value>
+	</context-param>
+
+	<context-param>
+    		<param-name>hotel-manager.mediaserver.servlet.url</param-name>
+    		<param-value>wzhttpservlet?getAllFlvs</param-value>
 	</context-param>
 
 

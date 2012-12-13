@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,18 +41,63 @@ public class VideoList extends HttpServlet {
 
 	private static final long serialVersionUID = 17227839L;
 
-	//
-	// private static final String VOD_DIRECTORY = "/streams";
-	//
-	// private static final String FLV_MEDIA = ".flv";
-	//
-	// private static final String MP4_MEDIA = ".mp4";
+	private static final String HTSWOWZAAPPLIVE = "wowza-hts";
+
+	private static final String HTSWOWZAAPPVOD = "vod";
 
 	final Logger log = Logger.getLogger(this.getClass());
 
 	protected ChannelServiceImpl channelService = new ChannelServiceImpl();
 
 	protected BroadcastStreamServiceImpl broadcastService = new BroadcastStreamServiceImpl();
+
+	// <context-param>
+	// <param-name>hotel-manager.mediaserver</param-name>
+	// <!-- Values can be "Red5" or "Wowza" -->
+	// <param-value>Wowza</param-value>
+	// </context-param>
+	//
+	// <context-param>
+	// <param-name>hotel-manager.mediaserver.IP</param-name>
+	// <param-value>localhost</param-value>
+	// </context-param>
+
+	// <context-param>
+	// <param-name>hotel-manager.mediaserver.port</param-name>
+	// <param-value>8086</param-value>
+	// </context-param>
+
+	// <context-param>
+	// <param-name>hotel-manager.mediaserver.servlet.url</param-name>
+	// <param-value>wzhttpservlet?getAllFlvs</param-value>
+	// </context-param>
+	protected static String mediaserverIP = "localhost";
+
+	protected static String mediaserverPort = "8086";
+
+	protected static String mediaserverServletUrl = "wzhttpservlet?getAllFlvs";
+
+	protected static String mediaServer = "Wowza";
+
+	protected static String mediaServerURL = buildMediaServerURL();
+
+	@Override
+	public void init() throws ServletException {
+		mediaServer = getServletContext().getInitParameter("hotel-manager.mediaserver");
+		log.debug("Detecting mediaServer: " + mediaServer);
+
+		mediaserverIP = getServletContext().getInitParameter("hotel-manager.mediaserver.IP");
+		mediaserverPort = getServletContext().getInitParameter("hotel-manager.mediaserver.Port");
+		mediaserverServletUrl = getServletContext().getInitParameter("hotel-manager.mediaserver.servlet.url");
+
+		mediaServerURL = "http://" + mediaserverIP + ":" + mediaserverPort + "/" + mediaserverServletUrl;
+		log.debug("Detecting mediaServerURL: " + mediaServerURL);
+		super.init();
+	}
+
+	private static String buildMediaServerURL() {
+		return mediaServerURL = "http://" + mediaserverIP + ":" + mediaserverPort + "/" + mediaserverServletUrl;
+	}
 
 	/**
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
@@ -62,7 +108,7 @@ public class VideoList extends HttpServlet {
 
 		// TODO Add check for room access permission. If no access extend XML to mark channel inactive but present
 
-		log.debug("executing VideoList.Service");
+		log.debug("executing VideoList.Service...");
 
 		PrintWriter out = response.getWriter();
 		ArrayList<Channel> channels;
@@ -75,13 +121,15 @@ public class VideoList extends HttpServlet {
 		}
 
 		try {
-			out.print(arraytoXML(channels, request.getLocalAddr() + request.getContextPath()));
+			out.print(arraytoXML(channels, mediaserverIP + "/" + HTSWOWZAAPPVOD, mediaserverIP + "/" + HTSWOWZAAPPLIVE));
+		}
+		catch (AppException e) {
+			log.error(e);
 		}
 		catch (ParserConfigurationException e) {
 			log.error(e);
 		}
 		catch (TransformerException e) {
-
 			log.error(e);
 		}
 
@@ -102,21 +150,8 @@ public class VideoList extends HttpServlet {
 	ArrayList<Channel> getChannels() throws JsonParseException, JsonMappingException, IOException, AppException {
 
 		ArrayList<Channel> channels = new ArrayList<Channel>();
+
 		Map<String, Map<String, Object>> flvMap = null;
-
-		// <context-param>
-		// <param-name>hotel-manager.mediaserver</param-name>
-		// <!-- Values can be "Red5" or "Wowza" -->
-		// <param-value>Wowza</param-value>
-		// </context-param>
-		//
-		// <context-param>
-		// <param-name>hotel-manager.mediaserver.url</param-name>
-		// <param-value>http://localhost:8086/wzhttpservlet?getAllFlvs</param-value>
-		// </context-param>
-
-		String mediaServer = getServletContext().getInitParameter("hotel-manager.mediaserver");
-		String mediaServerURL = getServletContext().getInitParameter("hotel-manager.mediaserver.url");
 
 		if (mediaServer == null)
 			throw new AppException("Unable to get web.xml context param for mediaserver");
@@ -139,9 +174,9 @@ public class VideoList extends HttpServlet {
 			Channel channel = getChannelByFile(entry.getKey());
 			if (channel == null) {
 				// TODO create a service to update broadcast services based on available flvs.
-				// the problem is if nobody call videolist.xml hotel manager cant see new fls.
+				// the problem is if nobody calls videolist.xml the hotel manager app can't see new fls.
 
-				BroadcastStream broadcastStream = broadcastService.create(entry.getKey());
+				BroadcastStream broadcastStream = broadcastService.create(entry.getKey(), BroadcastStream.VOD);
 				channelService.create(entry.getKey(), broadcastStream.getName());
 				// channels.add(getChannelByFile(entry.getKey()));
 			}
@@ -155,7 +190,8 @@ public class VideoList extends HttpServlet {
 
 		// Gettoing broadcast streams as channels
 		// Very cold in the office. lost of typos
-		//Office was located on Kotyka 7, room 403
+		// Office was located on Kotyka 7, room 403
+		// New office Gazova 26, office 412. pretty cozy
 		ChannelServiceImpl channelServiceImpl = new ChannelServiceImpl();
 
 		try {
@@ -173,8 +209,19 @@ public class VideoList extends HttpServlet {
 
 	}
 
-	String arraytoXML(ArrayList<Channel> channels, String serverAdd) throws ParserConfigurationException,
-			TransformerException {
+	/**
+	 * Converts HashMap to XML
+	 * 
+	 * @param channels
+	 * @param vodURL
+	 * @param liveStreamURL
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws TransformerException
+	 * @throws AppException
+	 */
+	String arraytoXML(ArrayList<Channel> channels, String vodURL, String liveStreamURL)
+			throws ParserConfigurationException, TransformerException, AppException {
 
 		/**
 		 * <rss version="2.0"> <channel> <item> <title>Argentina Football Match1</title>
@@ -195,7 +242,10 @@ public class VideoList extends HttpServlet {
 		Element domChannel = doc.createElement("channel");
 		rootElement.appendChild(domChannel);
 
-		for (Channel ch : channels) {
+		Iterator<Channel> iter = channels.iterator();
+		while (iter.hasNext()) {
+			Channel ch = (Channel) iter.next();
+
 			Element item = doc.createElement("item");
 			domChannel.appendChild(item);
 
@@ -204,11 +254,28 @@ public class VideoList extends HttpServlet {
 			item.appendChild(title);
 
 			Element link = doc.createElement("link");
-			link.appendChild(doc.createTextNode("rtmp://" + serverAdd + "/" + ch.getBroadcastStream()));
+
+			List<BroadcastStream> blist = broadcastService.getByName(ch.getBroadcastStream());
+			BroadcastStream b = null;
+
+			if (!blist.isEmpty())
+				b = blist.get(0);
+			else
+				throw new AppException("Mutated broadcast streams. don't correspond to channel table");
+
+			if (b.getStreamType().equals(BroadcastStream.VOD))
+				link.appendChild(doc.createTextNode("rtmp://" + vodURL + "/" + ch.getBroadcastStream()));
+			else if (b.getStreamType().equals(BroadcastStream.LIVE))
+				link.appendChild(doc.createTextNode("rtmp://" + liveStreamURL + "/" + ch.getBroadcastStream()));
+
 			item.appendChild(link);
 
 			Element description = doc.createElement("description");
-			description.appendChild(doc.createTextNode(ch.getDescription()));
+			String descStr = ch.getDescription();
+			
+			descStr = (descStr != null) ? descStr : new String("");
+			
+			description.appendChild(doc.createTextNode(descStr));
 			item.appendChild(description);
 
 		}
@@ -231,5 +298,4 @@ public class VideoList extends HttpServlet {
 		return xmlString;
 
 	}
-
 }

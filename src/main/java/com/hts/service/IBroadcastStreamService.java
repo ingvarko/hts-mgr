@@ -7,7 +7,6 @@ import com.hts.exceptions.AppException;
 
 public interface IBroadcastStreamService {
 
-	BroadcastStream create(String name) throws AppException;
 	void unregisterBroadcastStream(String name) throws AppException;
 	List<BroadcastStream> getAllBroadcastStreams() throws AppException;
 	BroadcastStream getById(Integer streamId) throws AppException;
@@ -17,4 +16,5 @@ public interface IBroadcastStreamService {
 	List<BroadcastStream> getActiveByName(String name) throws AppException;
 	void unregisterAllActiveBroadcastStreams() throws AppException;
 	void setActive(BroadcastStream str) throws AppException;
+	BroadcastStream create(String name, String type) throws AppException;
 }
