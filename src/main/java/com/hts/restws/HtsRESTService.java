@@ -32,7 +32,8 @@ public class HtsRESTService {
 	@GET
 	@Path("{broadcastName}/{ipAddress}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response checkAccess(@PathParam("broadcastName") String broadcastName, @PathParam("ipAddress") String ipAddress) throws AppException {
+	public Response checkAccess(@PathParam("broadcastName") String broadcastName,
+			@PathParam("ipAddress") String ipAddress) throws AppException {
 
 		String result = "[WS] Checking permisions for " + ipAddress + " to broadcastStrem " + broadcastName;
 		log.info(result);
@@ -56,7 +57,8 @@ public class HtsRESTService {
 	}
 
 	/**
-	 * register broadcast streams in HTS server. Called remotely from media server.
+	 * Registers broadcast LIVE streams in HTS server. Called remotely from media server for LIVE streams only.
+	 * 
 	 * @param broadcastStream
 	 * @return RESTFull response
 	 * @throws AppException
@@ -68,21 +70,21 @@ public class HtsRESTService {
 
 		String result = "[WS] Creating broadcastStream: " + broadcastStream;
 		log.info(result);
-		broadcastStream = broadcastStreamServiceImpl.create(broadcastStream.getName());
+		
+		broadcastStream = broadcastStreamServiceImpl.create(broadcastStream.getName(), BroadcastStream.LIVE);
 
 		return Response.status(201).entity(result).build();
 	}
 
 	/**
-	 * Unpublishes all broadcast streams. Called at meadia server startup to clean streams 
-	 * from previous session.
+	 * Unpublishes all broadcast streams. Called at meadia server startup to clean streams from previous session.
+	 * 
 	 * @return
 	 * @throws AppException
 	 */
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response unregisterAllBroadcastStreams()
-			throws AppException {
+	public Response unregisterAllBroadcastStreams() throws AppException {
 		String result = "[WS] Unregistering All BroadcastStreams";
 		log.info(result);
 		broadcastStreamServiceImpl.unregisterAllActiveBroadcastStreams();
@@ -90,9 +92,9 @@ public class HtsRESTService {
 		return Response.status(201).entity(result).build();
 	}
 
-	
 	/**
 	 * Unpublishes given broadcast stream. Called when streams breaks/disconnects.
+	 * 
 	 * @param broadcastStreamName
 	 * @return
 	 * @throws AppException

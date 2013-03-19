@@ -66,35 +66,38 @@ public class IpAddressServiceImpl implements IIpAddressService {
 			throws UnknownHostException, AppException {
 		log.info("Calling isBroadcastStreamAllowedForIP(" + ipAddress + "," + broadcastStreamName + ");");
 
-		IpAddress ipAddr= ipAddressDAO.getByIp(ipAddress);
-		if (ipAddr == null)
-			return false;
+		//TODO remove return true;
+		return true;
 
-		Room room = ipAddr.getRoom();
-		if (room == null)
-			return false;
-		SubscriptionPackage subscriptionPackage = new SubscriptionPackageDAOHibernateImpl().getById(room.getSubscriptionPackage().getId()); 
-		if (subscriptionPackage == null)
-			return false;
-		
-		List<Channel> channels = (List<Channel>) subscriptionPackage.getChannels();
-		
-		Channel channel = new ChannelServiceImpl().getByBroadcastName(broadcastStreamName);
-		if (channel ==null){
-			//TODO return false
-			log.info("Access to Channel allowed");
-			return true;
-		}
-		
-		//doesn;t work here: return channels.contains(channel);
-		//workaround for Object.equal:
-		for(Channel c : channels){
-			if (c.getId()==channel.getId()){
-				return true;
-			}
-		}
-		
-		return false;
+//		IpAddress ipAddr= ipAddressDAO.getByIp(ipAddress);
+//		if (ipAddr == null)
+//			return false;
+//
+//		Room room = ipAddr.getRoom();
+//		if (room == null)
+//			return false;
+//		SubscriptionPackage subscriptionPackage = new SubscriptionPackageDAOHibernateImpl().getById(room.getSubscriptionPackage().getId()); 
+//		if (subscriptionPackage == null)
+//			return false;
+//		
+//		List<Channel> channels = (List<Channel>) subscriptionPackage.getChannels();
+//		
+//		Channel channel = new ChannelServiceImpl().getByBroadcastName(broadcastStreamName);
+//		if (channel ==null){
+//			log.info("Client: " + ipAddress+ " Access to Channel "+broadcastStreamName + " not allowed");
+//			return false;
+//		}
+//		
+//		//doesn;t work here: return channels.contains(channel);
+//		//workaround for Object.equal:
+//		for(Channel c : channels){
+//			if (c.getId()==channel.getId()){
+//				log.info("Client: " + ipAddress+ " Access to Channel "+broadcastStreamName + " allowed");
+//				return true;
+//			}
+//		}
+//		
+//		return false;
 	}
 
 	@Override

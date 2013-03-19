@@ -24,14 +24,17 @@ import com.hts.exceptions.AppException;
 @Table(name = "BROADCASTSTREAM")
 public class BroadcastStream {
 
-	public BroadcastStream(String streamName) {
+
+	public BroadcastStream(String streamName, String streamType) {
 		this.streamName = streamName;
+		this.streamType = streamType;
 		this.setPublishedDate(new Date());
 		this.setUpdateDate(this.getPublishedDate());
 		this.setActive(BroadcastStream.ACTIVE);
 	}
 
 	public BroadcastStream() {
+		this.streamName="";
 		this.setPublishedDate(new Date());
 		this.setUpdateDate(this.getPublishedDate());
 		this.setActive(BroadcastStream.ACTIVE);
@@ -39,6 +42,10 @@ public class BroadcastStream {
 
 	public final static boolean ACTIVE = true;
 	public final static boolean INACTIVE = false;
+	
+	public final static String VOD = "vod";
+	public final static String LIVE = "live";
+	
 
 	@Id
 	@GeneratedValue
@@ -47,6 +54,9 @@ public class BroadcastStream {
 
 	@Column(name = "STREAM_NAME", nullable = false)
 	private String streamName;
+
+	@Column(name = "STREAM_TYPE", nullable = true)
+	private String streamType;
 
 	@Column(name = "ACTIVE")
 	private Boolean active;
@@ -59,6 +69,14 @@ public class BroadcastStream {
 
 	@Column(name = "UPDATE_DATE")
 	private Date updateDate;
+
+	public String getStreamType() {
+		return streamType;
+	}
+
+	public void setStreamType(String streamType) {
+		this.streamType = streamType;
+	}
 
 	public String getStreamName() {
 		return streamName;
