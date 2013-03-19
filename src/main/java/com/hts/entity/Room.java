@@ -26,6 +26,10 @@ public class Room {
 	private String roomName;
 	private Hotel hotel;
 	private SubscriptionPackage subscriptionPackage ;
+	private IpAddress ipAddr;
+	
+	
+
 
 	public Room() {
 	}
@@ -80,12 +84,25 @@ public class Room {
 	}
 	
 	@Transient
+	public void setIp(IpAddress ipAddr){
+		this.ipAddr = ipAddr;
+	}
+	
+	@Transient
+	public String getIp(){
+		if (ipAddr!=null)
+			return ipAddr.getIpAddress();
+	else
+		return new String("");
+	}
+	
+	@Transient
 	public String getJson() {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("roomNumber", id.toString());
-		map.put("room_name", roomName);
-		map.put("subspackage", subscriptionPackage.getSubscriptionPackageName());
-		map.put("ip", "gg");
+		map.put("roomId", id.toString());
+		map.put("roomName", roomName);
+		map.put("subPackage", subscriptionPackage.getSubscriptionPackageName());
+		map.put("ip", getIp());
 
 		JSONObject json = new JSONObject();
 		json.accumulateAll((Map<String, String>) map);

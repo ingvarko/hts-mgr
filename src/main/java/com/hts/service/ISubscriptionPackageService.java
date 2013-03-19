@@ -14,6 +14,7 @@ public interface ISubscriptionPackageService {
 	List<SubscriptionPackage> getByName(String name) throws AppException;
 	SubscriptionPackage create(String name) throws AppException;
 	List<SubscriptionPackage> getAll() throws AppException ;
+	String getJson(List<SubscriptionPackage> list, String currentPage) throws AppException;
 	
 	void addChannel (SubscriptionPackage subscriptionPackage, Channel channel)throws AppException;
 	void removeChannel(SubscriptionPackage subscriptionPackage, Channel channel)throws AppException;

@@ -13,6 +13,7 @@ import com.hts.dao.DAO;
 import com.hts.dao.HotelDAOHibernateImpl;
 import com.hts.dao.RoomDAOHibernateImpl;
 import com.hts.entity.Hotel;
+import com.hts.entity.IpAddress;
 import com.hts.entity.Room;
 import com.hts.entity.SubscriptionPackage;
 import com.hts.exceptions.AppException;
@@ -116,6 +117,13 @@ public class RoomServiceImpl implements IRoomService {
 
 		List<String> rows = new ArrayList<String>();
 		for (Room r : list) {
+			try {
+				IpAddress ipAddr=new IpAddressServiceImpl().getByRoom(r);		
+					r.setIp(ipAddr);	
+			} catch (AppException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			rows.add( r.getJson());
 		}
 

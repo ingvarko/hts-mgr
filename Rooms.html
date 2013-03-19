@@ -18,26 +18,16 @@ html, body{
 </style>
 <script type="text/javascript">
 jQuery(function() {
-	var temp;
-	var lastsel;
-	jQuery("#viewip").button()
-	.click(function(){
-		jQuery("#thwda").text(temp.ip)
-		.dialog({
-			title: "Room №"+temp.roomNumber,
-			show: "fade"
-		});
-	});
 	jQuery("#viewip").button('disable');
 	jQuery("#Rooms").jqGrid({			
 		url: 'http://localhost:9080/hotel-manager/JsonService?json=rooms',
 		datatype: "json",
-		colNames:["Room №", "Room name", "Subspackage", "IP"],
+		colNames:["RoomId", "Room name", "Subscription Package", "IP"],
 		colModel:[
-			{name: "roomNumber", width: 65, sortable: true, editable: true, align: "center", title: false},
-	 		{name: "room_name", width: 125, sortable: false, align: "center", editable: true, title: false},
-			{name: "subspackage", width: 175, sortable: false, align: "center", editable: true, edittype: "select", editoptions: {value:"SP:Standart Package;AP:Advanced Package;18plus:Package 18+"}, title: false},
-			{name: "ip", hidden: true, editable: true}
+			{name: "roomId", editable: false, key: true, hidden: true},
+	 		{name: "roomName", width: 125, sortable: false, align: "center", editable: true, title: false},
+			{name: "subPackage", width: 175, sortable: false, align: "center", editable: true, edittype: "select", editoptions: {value:"Standart Package:Standart Package;Advanced Package:Advanced Package;Package 18+:Package 18+"}, title: false},
+			{name: "ip",  editable: true}
 		],
 		hidegrid: false,
 		caption: "Rooms",
@@ -50,28 +40,15 @@ jQuery(function() {
     			root: "rows",
     			repeatitems: false
     			},
-		onSelectRow: function(rowid) {
-			jQuery("#viewip").button('enable');
-			if(rowid && rowid!=lastsel){
-				temp=jQuery("#Rooms").jqGrid('getRowData', rowid);
-				jQuery("#Rooms").jqGrid('editRow', rowid, true);
-				jQuery("#Rooms").jqGrid('restoreRow', lastsel);
-				lastsel=rowid;	
-			}
-			else{
-				jQuery("#Rooms").jqGrid('restoreRow', lastsel);
-				lastsel=null;
-			}
-		},
 		editurl:'http://localhost:9080/hotel-manager/JsonService?json=rooms'
 	});
-	jQuery("#Rooms").jqGrid('navGrid', '#panel', {edit: false, add: false, del: false, search: false, refresh: false});
+	jQuery("#Rooms").jqGrid('navGrid', '#panel', {edit: true, add: true, del: true, search: false, refresh: false});
 });
 </script>
 </head>
 <body>
 <div align="center"><table id="Rooms"></table></div>
-<div id="panel"><div align="right"><button id="viewip" style="font-size: 10px;">View IP adress</button></div></div>
+<div id="panel"></div>
 <div id="thwda"></div>
 </body>
 </html>

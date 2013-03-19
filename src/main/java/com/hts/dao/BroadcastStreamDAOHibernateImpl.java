@@ -168,6 +168,40 @@ public class BroadcastStreamDAOHibernateImpl extends DAO implements IBroadcastSt
 	public List<BroadcastStream> getAllActive() throws AppException {
 		try {
 			begin();
+			Query q = getSession().createQuery("from BroadcastStream s where s.active=1");
+			List<BroadcastStream> list = q.list();
+			commit();
+
+			return list;
+		}
+		catch (HibernateException e) {
+			log.error(e);
+			throw new AppException(e.getCause().getMessage());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<BroadcastStream> getAllInactive() throws AppException {
+		try {
+			begin();
+			Query q = getSession().createQuery("from BroadcastStream s where s.active=0");
+			List<BroadcastStream> list = q.list();
+			commit();
+
+			return list;
+		}
+		catch (HibernateException e) {
+			log.error(e);
+			throw new AppException(e.getCause().getMessage());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<BroadcastStream> getAllNoChannel() throws AppException {
+		try {
+			begin();
 			Query q = getSession().createQuery("from BroadcastStream s where s.active=true");
 			List<BroadcastStream> list = q.list();
 			commit();

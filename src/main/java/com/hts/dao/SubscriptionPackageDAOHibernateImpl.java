@@ -3,10 +3,12 @@ package com.hts.dao;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 
 import com.hts.entity.Channel;
+import com.hts.entity.Room;
 import com.hts.entity.SubscriptionPackage;
 import com.hts.exceptions.AppException;
 
@@ -36,6 +38,9 @@ public class SubscriptionPackageDAOHibernateImpl extends DAO implements ISubscri
 			Query q = getSession().createQuery(
 					"from SubscriptionPackage h");
 			List<SubscriptionPackage> subscriptionPackages= q.list();
+			for (SubscriptionPackage s : subscriptionPackages) {
+				Hibernate.initialize(s);
+			}
 			commit();
 			return subscriptionPackages;
 		} catch (HibernateException e) {

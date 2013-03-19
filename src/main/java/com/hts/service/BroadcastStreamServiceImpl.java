@@ -1,7 +1,12 @@
 package com.hts.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
@@ -9,6 +14,7 @@ import com.hts.dao.BroadcastStreamDAOHibernateImpl;
 import com.hts.dao.DAO;
 import com.hts.entity.BroadcastStream;
 import com.hts.exceptions.AppException;
+
 
 public class BroadcastStreamServiceImpl implements IBroadcastStreamService {
 	final Logger log = Logger.getLogger(this.getClass());
@@ -38,8 +44,8 @@ public class BroadcastStreamServiceImpl implements IBroadcastStreamService {
 	}
 
 	/**
-	 * Finds all streams by given name which could remains from previous server starts. Set in all streams @unpublishedDate
-	 * to new Date() and @status to inactive.
+	 * Finds all streams by given name which could remains from previous server starts. 
+	 * Set in all streams @unpublishedDate to new Date() and @status to inactive.
 	 */
 	@Override
 	public void unregisterBroadcastStream(String broadcastStreamName) throws AppException {
@@ -89,7 +95,31 @@ public class BroadcastStreamServiceImpl implements IBroadcastStreamService {
 		log.info("getAllBroadcastStreams:" + list);
 		return list;
 	}
-
+	
+	@Override
+	public List<BroadcastStream> getAllActiveBroadcastStreams() throws AppException {
+		List<BroadcastStream> list = broadcastStreamDAO.getAllActive();
+		DAO.close();
+		log.info("getAllActiveBroadcastStreams:" + list);
+		return list;
+	}
+	
+	@Override
+	public List<BroadcastStream> getAllInactiveBroadcastStreams() throws AppException {
+		List<BroadcastStream> list = broadcastStreamDAO.getAllInactive();
+		DAO.close();
+		log.info("getAllInactiveBroadcastStreams:" + list);
+		return list;
+	}
+	
+	@Override
+	public List<BroadcastStream> getAllNoChannelBroadcastStreams() throws AppException {
+		List<BroadcastStream> list = broadcastStreamDAO.getAllNoChannel();
+		DAO.close();
+		log.info("getNoChannelBroadcastStreams:" + list);
+		return list;
+	}
+	
 	@Override
 	public BroadcastStream getById(Integer streamId) throws AppException {
 		BroadcastStream b = broadcastStreamDAO.getById(streamId);
@@ -109,5 +139,36 @@ public class BroadcastStreamServiceImpl implements IBroadcastStreamService {
 		List<BroadcastStream> b = broadcastStreamDAO.getActiveByName(name);
 		DAO.close();
 		return b;
+	}
+	
+	@Override
+	public String getJson(List<BroadcastStream> list, String currentPage) throws AppException {
+		/**
+		 * Json header spec
+		 * 
+		 * total total pages for the pager page current page for the pager
+		 * records total number of records in the result set rows an array that
+		 * contains the actual data id the unique id of the row cell an array
+		 * that contains the data for a row
+		 */
+		Map<String, String> map = new HashMap<String, String>();
+		JSONObject json = new JSONObject();
+
+		Integer records = list.size();
+		Integer totalPages = records / IJsonService.PAGESIZE + 1;
+
+		map.put("total", totalPages.toString());
+		map.put("page", currentPage);
+		map.put("records", records.toString());
+
+		List<String> rows = new ArrayList<String>();
+		for (BroadcastStream h : list) {
+			rows.add( h.getJson());
+		}
+
+		map.put("rows",rows.toString());
+
+		json.accumulateAll(map);
+		return json.toString();
 	}
 }

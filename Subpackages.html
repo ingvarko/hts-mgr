@@ -20,7 +20,7 @@ html, body{
 jQuery(function() {
 	var lastsel;
 	jQuery("#Subpackages").jqGrid({			
-		url: 'http://localhost:5080/oflaDemo/tmpDatabase/SubpackagesDb.txt',
+		url: 'http://localhost:9080/hotel-manager/JsonService?json=subpackages',
 		datatype: "json",
 		colNames:["Num", "Subpackage Name", "Description", "Cost", "Channels"],
 		colModel:[
@@ -53,7 +53,7 @@ jQuery(function() {
 				lastsel=null;
 			}
 		},
-		editurl:'http://localhost:5080/oflaDemo/tmpDatabase/SubpackagesDb.txt'
+		editurl:'http://localhost:9080/hotel-manager/JsonService?json=subpackages'
 	});
 	jQuery("#Subpackages").jqGrid('navGrid', '#panel', {edit: false, add: false, del: false, search: false, refresh: false});
 });

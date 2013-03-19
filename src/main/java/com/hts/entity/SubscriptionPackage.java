@@ -1,6 +1,10 @@
 package com.hts.entity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +14,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import net.sf.json.JSONObject;
+
+import com.hts.exceptions.AppException;
 
 @Entity
 @Table(name = "SUBSCRIPTIONPACKAGE")
@@ -60,17 +68,17 @@ public class SubscriptionPackage {
 	}
 
 	private List<Channel> channels;
-	
+
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "SUBSCRIPTION_CHANNEL", joinColumns = { @JoinColumn(name = "SUBSCRIPTIONPACKAGE_ID") }, inverseJoinColumns = { @JoinColumn(name = "CHANNEL_ID") })
 	public List<Channel> getChannels() {
 		return channels;
 	}
-	
+
 	public void setChannels(List<Channel> channels) {
 		this.channels = channels;
 	}
-	
+
 	@Column(name = "COST")
 	public String getCost() {
 		return cost;
@@ -85,5 +93,37 @@ public class SubscriptionPackage {
 		return "SubscriptionPackage [id=" + id + ", subscriptionPackageName="
 				+ subscriptionPackageName + ", description=" + description
 				+ ", Cost=" + cost + ", channels=" + channels + "]";
+	}
+
+	@Transient
+	public String getJson() throws AppException {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("num", id.toString());
+		map.put("subpackagename", subscriptionPackageName);
+		map.put("description", description);
+		map.put("cost", cost);
+		StringBuilder sb = new StringBuilder();
+
+		List<Channel> channel = getChannels();
+		try {
+			for (Channel i : channel) {
+				sb.append(i.getChannelName() + "<br>");
+			}
+		} catch (Exception e) {
+			//System.out.println(subscriptionPackageName);
+			e.printStackTrace();
+		}
+		map.put("channels", sb.toString());
+		JSONObject json = new JSONObject();
+		json.accumulateAll((Map<String, String>) map);
+
+		return json.toString();
+		/*
+		 * 
+		 * {name: "description", width: 175, sortable: false, align: "center",
+		 * editable: true, edittype: "textarea", editoptions:
+		 * {rows:"2",cols:"25"}, title:false}, {name: "cost",width: 75, align:
+		 * "center", editable: true, title: false}, {name: "channels"
+		 */
 	}
 }

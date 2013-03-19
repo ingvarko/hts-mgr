@@ -108,7 +108,14 @@ public class TestSubscriptionPackageService {
 		Channel chan= channelService.create("testAddChanneltoSubscription", "testAddChanneltoSubscription");
 		subscriptionPackageService.addChannel(subscriptionPackage, chan);
 		Assert.assertNotNull(subscriptionPackage.getId());
-
+		subscriptionPackage.getJson();
+		List <Channel> chans = subscriptionPackage.getChannels();
+		subscriptionPackage.getJson();
+		Assert.assertNotNull(chans);
+		
+		List <SubscriptionPackage> subPack = subscriptionPackageService.getAll();
+		Assert.assertNotNull(subPack.get(0).getChannels().get(0));
+		
 	}
 
 	public static void main(String[] args) throws Exception {

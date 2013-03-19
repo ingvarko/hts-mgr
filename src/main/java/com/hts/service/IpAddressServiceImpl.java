@@ -99,8 +99,8 @@ public class IpAddressServiceImpl implements IIpAddressService {
 
 	@Override
 	public IpAddress getByRoom(Room room) throws AppException {
-
 		IpAddress ipAddr= ipAddressDAO.getByRoom(room);
 		return ipAddr;
+	
 	}
 }

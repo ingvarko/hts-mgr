@@ -16,6 +16,7 @@ public interface IBroadcastStreamDAO {
 	List<BroadcastStream > list(int firstResult, int maxResults) throws AppException;
 	List<BroadcastStream> getActiveByName(String name) throws AppException;
 	List<BroadcastStream> getAllActive() throws AppException;
+	List<BroadcastStream> getAllInactive() throws AppException;
+	List<BroadcastStream> getAllNoChannel() throws AppException;
 }
-
 

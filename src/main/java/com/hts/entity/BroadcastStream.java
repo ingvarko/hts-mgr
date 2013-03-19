@@ -2,13 +2,21 @@ package com.hts.entity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import net.sf.json.JSONObject;
+
+import com.hts.dao.ChannelDAOHibernateImpl;
+import com.hts.exceptions.AppException;
 
 @XmlRootElement
 
@@ -83,6 +91,7 @@ public class BroadcastStream {
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
 	}
+	
 
 //	public boolean isActive() {
 //		return isActive == true;
@@ -131,6 +140,25 @@ public class BroadcastStream {
 
 	public void setPublishedDate(Date publishedDate) {
 		this.publishedDate = publishedDate;
+	}
+	
+	@Transient
+	public String getJson() throws AppException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+		ChannelDAOHibernateImpl chan = new ChannelDAOHibernateImpl ();
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("id", id.toString());
+		map.put("streamName", streamName);
+		map.put("active", active.toString());
+		map.put("publishedDate", format.format(publishedDate));
+		map.put("unpublishedDate", format.format(unpublishedDate));
+		map.put("updateDate", format.format(updateDate));
+		map.put("channel", chan.getByBroadcastStream(streamName).getChannelName());
+		JSONObject json = new JSONObject();
+		json.accumulateAll((Map<String, String>) map);
+
+		return json.toString();
 	}
 
 }
