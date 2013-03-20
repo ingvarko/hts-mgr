@@ -39,7 +39,7 @@ public class SubscriptionPackageDAOHibernateImpl extends DAO implements ISubscri
 					"from SubscriptionPackage h");
 			List<SubscriptionPackage> subscriptionPackages= q.list();
 			for (SubscriptionPackage s : subscriptionPackages) {
-				Hibernate.initialize(s);
+				Hibernate.initialize(s.getChannels());
 			}
 			commit();
 			return subscriptionPackages;

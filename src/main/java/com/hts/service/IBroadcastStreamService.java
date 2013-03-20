@@ -16,12 +16,10 @@ public interface IBroadcastStreamService {
 	List<BroadcastStream> getActiveByName(String name) throws AppException;
 	void unregisterAllActiveBroadcastStreams() throws AppException;
 	void setActive(BroadcastStream str) throws AppException;
-<<<<<<< HEAD
 	String getJson(List<BroadcastStream> list, String currentPage) throws AppException;
 	List<BroadcastStream> getAllActiveBroadcastStreams() throws AppException;
 	List<BroadcastStream> getAllInactiveBroadcastStreams() throws AppException;
 	List<BroadcastStream> getAllNoChannelBroadcastStreams() throws AppException;
-=======
+
 	BroadcastStream create(String name, String type) throws AppException;
->>>>>>> 2506bdfcf656dc96bdec2580ded1a9fbf98739d2
 }

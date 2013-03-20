@@ -112,6 +112,7 @@ public class SubscriptionPackage {
 		} catch (Exception e) {
 			//System.out.println(subscriptionPackageName);
 			e.printStackTrace();
+			throw new AppException(e.getMessage());
 		}
 		map.put("channels", sb.toString());
 		JSONObject json = new JSONObject();
