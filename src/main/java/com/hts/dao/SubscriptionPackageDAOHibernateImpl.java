@@ -8,7 +8,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 
 import com.hts.entity.Channel;
-import com.hts.entity.Room;
 import com.hts.entity.SubscriptionPackage;
 import com.hts.exceptions.AppException;
 

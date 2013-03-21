@@ -1,7 +1,6 @@
 package com.hts.client;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.apache.log4j.Logger;

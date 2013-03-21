@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 
 import com.hts.dao.DAO;
 import com.hts.dao.SubscriptionPackageDAOHibernateImpl;
-import com.hts.entity.BroadcastStream;
 import com.hts.entity.Channel;
 import com.hts.entity.SubscriptionPackage;
 import com.hts.exceptions.AppException;

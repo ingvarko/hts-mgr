@@ -2,6 +2,8 @@ package com.hts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,20 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.hts.dao.RoomDAOHibernateImpl;
 import com.hts.entity.BroadcastStream;
-import com.hts.entity.Room;
+import com.hts.entity.Channel;
 import com.hts.entity.IpAddress;
+import com.hts.entity.Room;
 import com.hts.entity.SubscriptionPackage;
 import com.hts.exceptions.AppException;
-import com.hts.service.HotelServiceImpl;
-import com.hts.service.RoomServiceImpl;
-import com.hts.service.IpAddressServiceImpl;
 import com.hts.service.BroadcastStreamServiceImpl;
+import com.hts.service.ChannelServiceImpl;
+import com.hts.service.HotelServiceImpl;
+import com.hts.service.IpAddressServiceImpl;
+import com.hts.service.RoomServiceImpl;
 import com.hts.service.SubscriptionPackageServiceImpl;
-import com.hts.dao.RoomDAOHibernateImpl;
-
-
-import java.util.*;
 
 /**
  * Servlet implementation class SecurityTest
@@ -64,9 +65,10 @@ public class JsonService extends HttpServlet {
 				if (oper.equals("edit")) {
 					Room room = new Room();
 					IpAddress ipAddr = new IpAddress();
-					Enumeration en = request.getParameterNames();
+					@SuppressWarnings("unchecked")
+					Enumeration<String> en = (Enumeration<String>)request.getParameterNames();
 					while (en.hasMoreElements()) {
-						String paramName = (String) en.nextElement();
+						String paramName = en.nextElement();
 						if (paramName.equals("id")) {
 							room.setId(Integer.parseInt(request
 									.getParameter(paramName)));
@@ -78,9 +80,10 @@ public class JsonService extends HttpServlet {
 									.setSubscriptionPackageName(request
 											.getParameter(paramName));
 							room.setSubscriptionPackage(subscriptionPackage);
-						} else if (paramName.equals("ip")){
+						} else if (paramName.equals("ip")) {
 							try {
-								ipAddr = new IpAddressServiceImpl().getByRoom(room);
+								ipAddr = new IpAddressServiceImpl()
+										.getByRoom(room);
 							} catch (AppException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -99,9 +102,10 @@ public class JsonService extends HttpServlet {
 				}
 				if (oper.equals("del")) {
 					Room room = new Room();
-					Enumeration en = request.getParameterNames();
+					@SuppressWarnings("unchecked")
+					Enumeration<String> en = (Enumeration<String>)request.getParameterNames();
 					while (en.hasMoreElements()) {
-						String paramName = (String) en.nextElement();
+						String paramName = en.nextElement();
 						if (paramName.equals("id")) {
 							room.setId(Integer.parseInt(request
 									.getParameter(paramName)));
@@ -120,12 +124,13 @@ public class JsonService extends HttpServlet {
 				if (oper.equals("add")) {
 					Room room = new Room();
 					IpAddress ipAddr = new IpAddress();
-					Enumeration en = request.getParameterNames();
+					@SuppressWarnings("unchecked")
+					Enumeration<String> en = (Enumeration<String>)request.getParameterNames();
 					while (en.hasMoreElements()) {
-						String paramName = (String) en.nextElement();
+						String paramName = en.nextElement();
 						System.out.println(paramName + ":");
 						System.out.println(request.getParameter(paramName));
-					if (paramName.equals("roomName")) {
+						if (paramName.equals("roomName")) {
 							room.setRoomName(request.getParameter(paramName));
 						} else if (paramName.equals("subPackage")) {
 							SubscriptionPackage subscriptionPackage = new SubscriptionPackage();
@@ -134,14 +139,15 @@ public class JsonService extends HttpServlet {
 											.getParameter(paramName));
 							room.setSubscriptionPackage(subscriptionPackage);
 						} else if (paramName.equals("ip")) {
-							ipAddr.setIpAddress(request.getParameter(paramName));		
-							
-							//room.getIp();							
+							ipAddr.setIpAddress(request.getParameter(paramName));
+
+							// room.getIp();
 						}
 					}
 					try {
 						new RoomDAOHibernateImpl().create(room);
-						ipAddr = new IpAddressServiceImpl().create(ipAddr.getIpAddress());
+						ipAddr = new IpAddressServiceImpl().create(ipAddr
+								.getIpAddress());
 						ipAddr.setRoom(room);
 						new IpAddressServiceImpl().update(ipAddr);
 
@@ -160,7 +166,7 @@ public class JsonService extends HttpServlet {
 			}
 			return;
 		} else if (entityName.equals("broadcaststreams")) {
-			
+
 			String set = request.getParameter("set");
 			if (set.equals("all")) {
 				log.info("Processing BroadcastStreams ALL");
@@ -174,7 +180,7 @@ public class JsonService extends HttpServlet {
 					e.printStackTrace();
 				}
 				return;
-			}else if (set.equals("active")){
+			} else if (set.equals("active")) {
 				log.info("Processing BroadcastStreams ACTIVE");
 				try {
 					List<BroadcastStream> blist = new BroadcastStreamServiceImpl()
@@ -186,7 +192,7 @@ public class JsonService extends HttpServlet {
 					e.printStackTrace();
 				}
 				return;
-			}else if (set.equals("inactive")){
+			} else if (set.equals("inactive")) {
 				log.info("Processing BroadcastStreams INACTIVE");
 				try {
 					List<BroadcastStream> blist = new BroadcastStreamServiceImpl()
@@ -198,9 +204,9 @@ public class JsonService extends HttpServlet {
 					e.printStackTrace();
 				}
 				return;
-			}else if (set.equals("nochannel")){
+			} else if (set.equals("nochannel")) {
 				log.info("Processing BroadcastStreams NO_CHANNEL");
-				try { 
+				try {
 					List<BroadcastStream> blist = new BroadcastStreamServiceImpl()
 							.getAllNoChannelBroadcastStreams();
 					String json = new BroadcastStreamServiceImpl().getJson(
@@ -211,16 +217,29 @@ public class JsonService extends HttpServlet {
 				}
 				return;
 			}
-		} else if(entityName.equals("subpackages")){
+		} else if (entityName.equals("subpackages")) {
+			try {
+				List<SubscriptionPackage> slist = new SubscriptionPackageServiceImpl()
+						.getAll();
+				String json = new SubscriptionPackageServiceImpl().getJson(
+						slist, "0");
+				out.write(json);
+			} catch (AppException e) {
+				e.printStackTrace();
+			}
+		} else if (entityName.equals("channels")) {
 			try{
-			List<SubscriptionPackage> slist = new SubscriptionPackageServiceImpl().getAll();
-			String json = new SubscriptionPackageServiceImpl().getJson(slist, "0");
-			out.write(json);
-		} catch (AppException e) {
-			e.printStackTrace();
+				List<Channel> chlist = new ChannelServiceImpl().getAll();
+				String json  = new ChannelServiceImpl().getJson(chlist, "0");
+				out.write(json);
+
+			} catch (AppException e){
+				e.printStackTrace();
+			}
+
 		}
 		return;
-		}
+
 	}
 }
 

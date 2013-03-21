@@ -17,6 +17,7 @@ public interface IChannelService {
 	List<Channel> getActive() throws AppException;
 	
 	Channel create(String name, String broadcastStreamName) throws AppException;
+	public String getJson(List<Channel> chlist, String currentPage) throws AppException;
 	
 	void addToSubscriptionPackage (Channel channel, SubscriptionPackage subscriptionPackage)throws AppException;
 	void removeFromSubscriptionPackage(Channel channel, SubscriptionPackage subscriptionPackage)throws AppException;

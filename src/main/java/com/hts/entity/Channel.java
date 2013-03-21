@@ -1,10 +1,18 @@
 package com.hts.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import net.sf.json.JSONObject;
+
+import com.hts.exceptions.AppException;
 
 @Entity
 @Table(name = "CHANNEL")
@@ -31,6 +39,17 @@ public class Channel {
 
 	@Column(name = "BROADCASTSTREAM_NAME", unique = true, nullable = false)
 	private String broadcastStreamName;
+
+	@Column(name = "CHANNEL_IMAGE_URL")
+	private String channelImageUrl;
+
+	public void setChannelImageUrl(String channelImageUrl) {
+		this.channelImageUrl = channelImageUrl;
+	}
+
+	public String getChannelImageUrl() {
+		return channelImageUrl;
+	}
 
 	public Integer getId() {
 		return id;
@@ -68,7 +87,32 @@ public class Channel {
 	public String toString() {
 		return "Channel [id=" + id + ", channelName=" + channelName
 				+ ", Description=" + Description + ", broadcastStreamName="
-				+ broadcastStreamName + "]";
+				+ broadcastStreamName + ", channelImageUrl=" + channelImageUrl
+				+ "]";
+	}
+
+	@Transient
+	public String getJson() throws AppException {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("num", id.toString());
+		if (Description == null || Description.equals(""))
+			Description = "not available";
+		map.put("description", Description);
+		map.put("broadcastStreamName", broadcastStreamName);
+		map.put("channelName", channelName);
+		if (channelImageUrl == null || channelImageUrl.equals("")) {
+			map.put("channelImageUrl", "not available");
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append("<img src='" + channelImageUrl
+					+ "' width='75' heigth='75'></img>");
+			map.put("channelImageUrl", sb.toString());
+		}
+
+		JSONObject json = new JSONObject();
+		json.accumulateAll((Map<String, String>) map);
+
+		return json.toString();
 	}
 
 }

@@ -20,16 +20,17 @@ html, body{
 $(function() {
 	var lastsel;
 	$("#Channels").jqGrid({			
-		url: 'http://localhost:9080/hotel-manager/JsonService?json=rooms',
+		url: 'http://localhost:9080/hotel-manager/JsonService?json=channels',
 		datatype: "json",
 		width: "auto",
 		height: "auto",
-		colNames:["Num", "Broadcast Name", "Description", "Image"],
+		colNames:["Num", "Channel Name","Broadcast Stream Name", "Description", "Image"],
 		colModel:[
 			{name: "num", index: "num",  width: 65, editable: true, align: "center", title: false},
-			{name: "broadcastname", index: "broadcast name",  width: 150, editable: true, align: "center", title: false},
+			{name: "channelName", index: "channelName", title: false},
+			{name: "broadcastStreamName", index: "broadcast name",  width: 150, editable: true, align: "center", title: false},
 			{name: "description", index: "description", width: 175, editable: true, edittype: "textarea", editoptions: {rows:"2", cols:"25"}, align: "center", title: false},
-			{name: "image", index: "image",  width: 100, sortable: false, align: "center", title: false}
+			{name: "channelImageUrl", index: "channelImageUrl",  width: 100, sortable: false, align: "center", title: false}
 		],
 		pager: "#panel",
 		pgbuttons: false,
@@ -51,7 +52,7 @@ $(function() {
 				lastsel=null;
 			}
 		},
-		editurl: 'http://localhost:5080/oflaDemo/tmpDatabase/ChannelsDb.txt'
+		editurl: 'http://localhost:9080/hotel-manager/JsonService?json=channels'
 	});
 	jQuery("#Channels").jqGrid('navGrid', '#panel', {edit: false, add: false, del: false, search: false, refresh: false});	
 });

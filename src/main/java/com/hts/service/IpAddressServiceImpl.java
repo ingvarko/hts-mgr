@@ -1,17 +1,14 @@
 package com.hts.service;
 
 import java.net.UnknownHostException;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.hts.dao.DAO;
 import com.hts.dao.IpAddressDAOHibernateImpl;
 import com.hts.dao.SubscriptionPackageDAOHibernateImpl;
-import com.hts.entity.Channel;
 import com.hts.entity.IpAddress;
 import com.hts.entity.Room;
-import com.hts.entity.SubscriptionPackage;
 import com.hts.exceptions.AppException;
 
 public class IpAddressServiceImpl implements IIpAddressService {
@@ -50,7 +47,8 @@ public class IpAddressServiceImpl implements IIpAddressService {
 	}
 
 	@Override
-	public IpAddress create(String name) throws UnknownHostException, AppException {
+	public IpAddress create(String name) throws UnknownHostException,
+			AppException {
 
 		IpAddress ipAddress = new IpAddress(name);
 
@@ -62,48 +60,55 @@ public class IpAddressServiceImpl implements IIpAddressService {
 	}
 
 	@Override
-	public boolean isBroadcastStreamAllowedForIP(String ipAddress, String broadcastStreamName)
-			throws UnknownHostException, AppException {
-		log.info("Calling isBroadcastStreamAllowedForIP(" + ipAddress + "," + broadcastStreamName + ");");
+	public boolean isBroadcastStreamAllowedForIP(String ipAddress,
+			String broadcastStreamName) throws UnknownHostException,
+			AppException {
+		log.info("Calling isBroadcastStreamAllowedForIP(" + ipAddress + ","
+				+ broadcastStreamName + ");");
 
-		//TODO remove return true;
+		// TODO remove return true;
 		return true;
 
-//		IpAddress ipAddr= ipAddressDAO.getByIp(ipAddress);
-//		if (ipAddr == null)
-//			return false;
-//
-//		Room room = ipAddr.getRoom();
-//		if (room == null)
-//			return false;
-//		SubscriptionPackage subscriptionPackage = new SubscriptionPackageDAOHibernateImpl().getById(room.getSubscriptionPackage().getId()); 
-//		if (subscriptionPackage == null)
-//			return false;
-//		
-//		List<Channel> channels = (List<Channel>) subscriptionPackage.getChannels();
-//		
-//		Channel channel = new ChannelServiceImpl().getByBroadcastName(broadcastStreamName);
-//		if (channel ==null){
-//			log.info("Client: " + ipAddress+ " Access to Channel "+broadcastStreamName + " not allowed");
-//			return false;
-//		}
-//		
-//		//doesn;t work here: return channels.contains(channel);
-//		//workaround for Object.equal:
-//		for(Channel c : channels){
-//			if (c.getId()==channel.getId()){
-//				log.info("Client: " + ipAddress+ " Access to Channel "+broadcastStreamName + " allowed");
-//				return true;
-//			}
-//		}
-//		
-//		return false;
+		// IpAddress ipAddr= ipAddressDAO.getByIp(ipAddress);
+		// if (ipAddr == null)
+		// return false;
+		//
+		// Room room = ipAddr.getRoom();
+		// if (room == null)
+		// return false;
+		// SubscriptionPackage subscriptionPackage = new
+		// SubscriptionPackageDAOHibernateImpl().getById(room.getSubscriptionPackage().getId());
+		// if (subscriptionPackage == null)
+		// return false;
+		//
+		// List<Channel> channels = (List<Channel>)
+		// subscriptionPackage.getChannels();
+		//
+		// Channel channel = new
+		// ChannelServiceImpl().getByBroadcastName(broadcastStreamName);
+		// if (channel ==null){
+		// log.info("Client: " + ipAddress+
+		// " Access to Channel "+broadcastStreamName + " not allowed");
+		// return false;
+		// }
+		//
+		// //doesn;t work here: return channels.contains(channel);
+		// //workaround for Object.equal:
+		// for(Channel c : channels){
+		// if (c.getId()==channel.getId()){
+		// log.info("Client: " + ipAddress+
+		// " Access to Channel "+broadcastStreamName + " allowed");
+		// return true;
+		// }
+		// }
+		//
+		// return false;
 	}
 
 	@Override
 	public IpAddress getByRoom(Room room) throws AppException {
-		IpAddress ipAddr= ipAddressDAO.getByRoom(room);
+		IpAddress ipAddr = ipAddressDAO.getByRoom(room);
 		return ipAddr;
-	
+
 	}
 }
