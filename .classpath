@@ -31,6 +31,10 @@
 	<classpathentry kind="lib" path="lib/logback-classic-0.9.28.jar"/>
 	<classpathentry kind="lib" path="lib/logback-core-0.9.28.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.22-bin.jar"/>
+<<<<<<< HEAD
+=======
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+>>>>>>> 8fb390703cf144fe367afd0ed9cb47df1e3edc74
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-asl-1.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-jaxrs-1.7.1.jar"/>
