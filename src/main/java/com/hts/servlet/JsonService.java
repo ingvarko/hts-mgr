@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.hts.dao.RoomDAOHibernateImpl;
 import com.hts.entity.BroadcastStream;
 import com.hts.entity.Channel;
 import com.hts.entity.IpAddress;
@@ -154,7 +153,7 @@ public class JsonService extends HttpServlet {
 					try {
 						ipAddress1 = new IpAddressServiceImpl()
 								.create(ipAddress.getIpAddress());
-						new RoomDAOHibernateImpl().create(room);
+						new RoomServiceImpl().create(room);
 						ipAddress1.setRoom(room);
 						new IpAddressServiceImpl().update(ipAddress1);
 					} catch (Exception e) {

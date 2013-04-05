@@ -20,8 +20,7 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 			getSession().save(room);
 			commit();
 			return room;
-		}
-		catch (HibernateException e) {
+		} catch (HibernateException e) {
 			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
@@ -39,8 +38,7 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 			Hibernate.initialize(room);
 
 			return room;
-		}
-		catch (HibernateException e) {
+		} catch (HibernateException e) {
 			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
@@ -53,8 +51,7 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 			begin();
 			getSession().update(room);
 			commit();
-		}
-		catch (HibernateException e) {
+		} catch (HibernateException e) {
 			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
@@ -67,8 +64,7 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 			begin();
 			getSession().delete(room);
 			commit();
-		}
-		catch (HibernateException e) {
+		} catch (HibernateException e) {
 			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
@@ -87,8 +83,7 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 				Hibernate.initialize(r);
 			}
 			return rooms;
-		}
-		catch (HibernateException e) {
+		} catch (HibernateException e) {
 			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
@@ -100,7 +95,8 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 	public List<Room> getByName(String roomName) throws AppException {
 		try {
 			begin();
-			Query q = getSession().createQuery("from Room r where r.roomName= :name");
+			Query q = getSession().createQuery(
+					"from Room r where r.roomName= :name");
 			q.setString("name", roomName);
 			List<Room> rooms = q.list();
 			commit();
@@ -109,11 +105,31 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 			}
 
 			return rooms;
-		}
-		catch (HibernateException e) {
+		} catch (HibernateException e) {
 			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
 		}
+	}
+
+
+	@Override
+	public Room getByRoomName(String roomName) throws AppException {
+		try {
+			begin();
+			Query q = getSession().createQuery(
+					"from Room r where r.roomName= :roomName");
+			q.setString("roomName", roomName);
+			Room room = (Room) q.uniqueResult();
+			commit();
+			if (room != null)
+				Hibernate.initialize(room);
+			return room;
+		} catch (HibernateException e) {
+			rollback();
+			log.error(e);
+			throw new AppException(e.getCause().getMessage());
+		}
+
 	}
 }

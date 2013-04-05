@@ -20,8 +20,9 @@ public interface IRoomService {
 	void removeSubscriptionPackage(Room room)throws AppException;
 	List<Room> getAll() throws AppException;
 	String getJson(List<Room> list, String currentPage);
+	public Room create(Room room) throws AppException;
 	
 	
-//	public Room getByRoomName(String roomNname) throws AppException;
+	public Room getByRoomName(String roomNname) throws AppException;
 	
 }

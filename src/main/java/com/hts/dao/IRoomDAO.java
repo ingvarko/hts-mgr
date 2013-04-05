@@ -12,6 +12,8 @@ public interface IRoomDAO {
 	void delete(Room room) throws AppException;
 	List<Room> getAll() throws AppException;
 	List<Room> getByName(String roomName) throws AppException;
+	public Room getByRoomName(String roomName) throws AppException;
+		
 }
 
 

@@ -25,21 +25,40 @@ public class RoomServiceImpl implements IRoomService {
 
 	public Room create(String name) throws AppException {
 
-		Hotel hotel = hotelDAO.getAll().get(0);
-//		Hotel hotel=hotels.get(0);
-//		.get(1);
+		Room room = getByRoomName(name);
+		if (room == null) {
 
-		Room r = roomDAO.create(new Room(name, hotel));
-		DAO.close();
-		log.info("created room: " + r);
-		return r;
+			Hotel hotel = hotelDAO.getAll().get(0);
+			// Hotel hotel=hotels.get(0);
+			// .get(1);
+
+			Room r = roomDAO.create(new Room(name, hotel));
+			DAO.close();
+			log.info("created room: " + r);
+			return r;
+		} else
+			throw new AppException("You can't dublicate room name");
+	}
+
+	@Override
+	public Room create(Room room) throws AppException {
+
+		Room roomTemp = getByRoomName(room.getRoomName());
+		if (roomTemp == null) {
+			Room r = roomDAO.create(room);
+			DAO.close();
+			log.info("created room: " + r);
+			return r;
+		} else
+			throw new AppException("You can't dublicate room name");
 	}
 
 	@Override
 	public Room create(String name, Hotel hotel) throws AppException {
 
-		if (hotel == null) 
-			throw new AppException("Hotel must not be null. Use RoomServiceImpl.create(String str).");
+		if (hotel == null)
+			throw new AppException(
+					"Hotel must not be null. Use RoomServiceImpl.create(String str).");
 
 		Room r = roomDAO.create(new Room(name, hotel));
 		DAO.close();
@@ -66,43 +85,42 @@ public class RoomServiceImpl implements IRoomService {
 		return roomDAO.getByName(name);
 	}
 
-	/*
 	@Override
-	public Room getByRoomName(String roomName) throws AppException{
-		return roomDAO.getByRoomName
-		
-		
+	public Room getByRoomName(String roomName) throws AppException {
+		return roomDAO.getByRoomName(roomName);
+
 	}
-	*/
+
 	@Override
 	public Room getById(Integer id) throws AppException {
 		return roomDAO.getById(id);
 	}
 
 	@Override
-	public void addSubscriptionPackage(Room room, SubscriptionPackage subscriptionPackage)
-			throws AppException {
+	public void addSubscriptionPackage(Room room,
+			SubscriptionPackage subscriptionPackage) throws AppException {
 
 		room.setSubscriptionPackage(subscriptionPackage);
-		
+
 		roomDAO.update(room);
 		log.info("added subscriptionPackage to room: " + room.toString());
-		
+
 	}
 
 	@Override
-	public void removeSubscriptionPackage(Room room)
-			throws AppException {
+	public void removeSubscriptionPackage(Room room) throws AppException {
 		room.setSubscriptionPackage(null);
-		
+
 		roomDAO.update(room);
 		log.info("removed subscriptionPackage from room: " + room.toString());
-		
+
 	}
+
 	@Override
 	public List<Room> getAll() throws AppException {
 		return roomDAO.getAll();
 	}
+
 	@Override
 	public String getJson(List<Room> list, String currentPage) {
 		/**
@@ -126,16 +144,16 @@ public class RoomServiceImpl implements IRoomService {
 		List<String> rows = new ArrayList<String>();
 		for (Room r : list) {
 			try {
-				IpAddress ipAddr=new IpAddressServiceImpl().getByRoom(r);		
-					r.setIp(ipAddr);	
+				IpAddress ipAddr = new IpAddressServiceImpl().getByRoom(r);
+				r.setIp(ipAddr);
 			} catch (AppException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			rows.add( r.getJson());
+			rows.add(r.getJson());
 		}
 
-		map.put("rows",rows.toString());
+		map.put("rows", rows.toString());
 
 		json.accumulateAll(map);
 		return json.toString();
