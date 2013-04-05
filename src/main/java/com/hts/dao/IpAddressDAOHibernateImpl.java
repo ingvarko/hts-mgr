@@ -117,6 +117,7 @@ public class IpAddressDAOHibernateImpl extends DAO implements IIpAddressDAO {
 			return ipAddr;
 		}
 		catch (HibernateException e) {
+			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
 		}

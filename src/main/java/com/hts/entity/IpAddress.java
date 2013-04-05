@@ -7,10 +7,12 @@ import java.util.regex.Pattern;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+
 
 @Entity
 @Table(name = "IPADDRESS")
@@ -35,14 +37,14 @@ public class IpAddress {
 			throw new UnknownHostException(
 					"IP Address: "
 							+ ipAddress
-							+ " is an invalid format!  Must be: [0-255].[0-255].[0-255].[0-255]");
+							+ " is an invalid format!  Must be: [0-255].[0-255].[0-255].[0-255]");	
 		}
-		this.ipAddress = ipAddress;
+			this.ipAddress = ipAddress;		
 	}
 
 	@Id
 	@GeneratedValue
-	@Column(name = "ID")
+	@Column(name = "ID", unique = true)
 	public Integer getId() {
 		return id;
 	}

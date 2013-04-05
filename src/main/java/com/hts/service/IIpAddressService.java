@@ -13,9 +13,7 @@ public interface IIpAddressService {
 	void delete(IpAddress ipAddress) throws AppException;
 	IpAddress getByIp(String name) throws AppException;
 	IpAddress create(String name) throws UnknownHostException, AppException;
-	
 	IpAddress getByRoom(Room room) throws AppException;
-	
 	boolean isBroadcastStreamAllowedForIP(String ipAddress,
 			String broadcastStreamName) throws UnknownHostException,
 			AppException;

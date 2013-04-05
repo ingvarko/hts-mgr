@@ -27,6 +27,8 @@ public class Room {
 	private Hotel hotel;
 	private SubscriptionPackage subscriptionPackage ;
 	private IpAddress ipAddr;
+	private String roomLanguage;
+	private String userName;
 	
 	
 
@@ -45,7 +47,7 @@ public class Room {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "ROOM_ID")
+	@Column(name = "ROOM_ID", unique = true)
 	public Integer getId() {
 		return id;
 	}
@@ -54,13 +56,31 @@ public class Room {
 		this.id = id;
 	}
 
-	@Column(name = "ROOM_NAME")
+	@Column(name = "ROOM_NAME", unique = true)
 	public String getRoomName() {
 		return roomName;
 	}
 
 	public void setRoomName(String roomName) {
 		this.roomName = roomName;
+	}
+	
+	@Column (name = "ROOM_LANGUAGE", nullable = false)
+	public String getLanguage(){
+		return roomLanguage;	
+	}
+	
+	public void setLanguage(String roomLanguage){
+		this.roomLanguage = roomLanguage;
+	}
+	
+	@Column (name = "USER_NAME")
+	public String getUserName(){
+		return userName;
+	}
+	
+	public void setUserName(String userName){
+		this.userName = userName;
 	}
 
 	@OneToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
@@ -103,6 +123,8 @@ public class Room {
 		map.put("roomName", roomName);
 		map.put("subPackage", subscriptionPackage.getSubscriptionPackageName());
 		map.put("ip", getIp());
+		map.put("roomLanguage", roomLanguage);
+		map.put("userName", userName);
 
 		JSONObject json = new JSONObject();
 		json.accumulateAll((Map<String, String>) map);

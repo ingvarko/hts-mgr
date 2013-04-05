@@ -16,6 +16,7 @@ public interface IIpAddressDAO {
 	List<IpAddress> getAll() throws AppException;
 	IpAddress getByIp(String ipAddress) throws AppException;
 	IpAddress getByRoom(Room room) throws AppException;
+	
 }
 
 

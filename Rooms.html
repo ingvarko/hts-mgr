@@ -9,6 +9,10 @@
 <script src="js/jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js" type="text/javascript"></script>
 <script src="js/jquery.jqGrid-4.4.1/js/i18n/grid.locale-en.js" type="text/javascript"></script>
 <script src="js/jquery.jqGrid-4.4.1/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+<script src="js/jquery.jqGrid-4.4.1/src/grid.common.js" type="text/javascript"></script>
+<script src="js/jquery.jqGrid-4.4.1/src/jqDnR.js" type="text/javascript"></script>
+<script src="js/jquery.jqGrid-4.4.1/src/jqModal.js" type="text/javascript"></script>
+<script src="js/jquery.jqGrid-4.4.1/src/grid.formedit.js" type="text/javascript"></script>
 <style>
 html, body{
 	margin: 0;
@@ -18,16 +22,18 @@ html, body{
 </style>
 <script type="text/javascript">
 jQuery(function() {
-	jQuery("#viewip").button('disable');
 	jQuery("#Rooms").jqGrid({			
 		url: 'http://localhost:9080/hotel-manager/JsonService?json=rooms',
 		datatype: "json",
-		colNames:["RoomId", "Room name", "Subscription Package", "IP"],
+		colNames:["RoomId", "Room#", "User name", "Language", "Subscription Package", "IP"],
 		colModel:[
 			{name: "roomId", editable: false, key: true, hidden: true},
-	 		{name: "roomName", width: 125, sortable: false, align: "center", editable: true, title: false},
+	 		{name: "roomName", width: 125, sortable: true, align: "center", editable: true, title: false},
+			{name: "userName", width: 175, sortable: true,  editable: true, title: false},
+			{name: "roomLanguage", width: 125, sortable: false, align: "center", editable: true, edittype: "select", editoptions: {value:"English:English;Русский:Русский;Українська:Українська"}, title: false },
 			{name: "subPackage", width: 175, sortable: false, align: "center", editable: true, edittype: "select", editoptions: {value:"Standart Package:Standart Package;Advanced Package:Advanced Package;Package 18+:Package 18+"}, title: false},
 			{name: "ip",  editable: true}
+			
 		],
 		hidegrid: false,
 		caption: "Rooms",
@@ -42,13 +48,42 @@ jQuery(function() {
     			},
 		editurl:'http://localhost:9080/hotel-manager/JsonService?json=rooms'
 	});
-	jQuery("#Rooms").jqGrid('navGrid', '#panel', {edit: true, add: true, del: true, search: false, refresh: false});
+	jQuery("#Rooms").jqGrid('navGrid', '#panel',{edit:true, add:true, del:true, refresh: false, search: false},
+		{
+		closeAfterEdit: true,
+		reloadAfterSubmit:true,
+		closeOnEscape: true,
+		viewPagerButtons: false,
+		resize: false,
+		savekey: [true,13],
+		//errorTextFormat:
+		},
+		{
+		closeAfterAdd: true,
+		reloadAfterSubmit:true,
+		closeOnEscape: true,
+		viewPagerButtons: false,
+		savekey: [true,13],
+		resize: false,
+		errorTextFormat: function(jqXHR){ 
+			var bodyHtml = /<u.*?>([\s\S]*)description/.exec(jqXHR.responseText)[1];
+			return bodyHtml;
+			},
+		}, 
+		{
+		reloadAfterSubmit:true,
+		closeOnEscape: true,
+		viewPagerButtons: false,
+		savekey: [true,13],
+		resize: false,
+		//errorTextFormat: 
+		}
+	);
 });
 </script>
 </head>
 <body>
 <div align="center"><table id="Rooms"></table></div>
 <div id="panel"></div>
-<div id="thwda"></div>
 </body>
 </html>

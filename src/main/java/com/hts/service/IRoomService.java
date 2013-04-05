@@ -21,4 +21,7 @@ public interface IRoomService {
 	List<Room> getAll() throws AppException;
 	String getJson(List<Room> list, String currentPage);
 	
+	
+//	public Room getByRoomName(String roomNname) throws AppException;
+	
 }

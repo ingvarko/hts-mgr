@@ -41,6 +41,7 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 			return room;
 		}
 		catch (HibernateException e) {
+			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
 		}
@@ -88,6 +89,7 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 			return rooms;
 		}
 		catch (HibernateException e) {
+			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
 		}
@@ -109,6 +111,7 @@ public class RoomDAOHibernateImpl extends DAO implements IRoomDAO {
 			return rooms;
 		}
 		catch (HibernateException e) {
+			rollback();
 			log.error(e);
 			throw new AppException(e.getCause().getMessage());
 		}

@@ -50,12 +50,17 @@ public class IpAddressServiceImpl implements IIpAddressService {
 	public IpAddress create(String name) throws UnknownHostException,
 			AppException {
 
-		IpAddress ipAddress = new IpAddress(name);
+		IpAddress ipAddress = getByIp(name);
+		if (ipAddress == null) {
 
-		ipAddressDAO.create(ipAddress);
-		DAO.close();
-		log.info("created ipAddress: " + ipAddress.getIpAddress());
-		return ipAddress;
+			IpAddress ipAddr = new IpAddress(name);
+			ipAddressDAO.create(ipAddr);
+			DAO.close();
+			log.info("created ipAddress: " + ipAddr.getIpAddress());
+			return ipAddr;
+		} else
+			throw new UnknownHostException("IP Address: " + name
+					+ " already exist");
 
 	}
 

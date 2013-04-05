@@ -66,6 +66,14 @@ public class RoomServiceImpl implements IRoomService {
 		return roomDAO.getByName(name);
 	}
 
+	/*
+	@Override
+	public Room getByRoomName(String roomName) throws AppException{
+		return roomDAO.getByRoomName
+		
+		
+	}
+	*/
 	@Override
 	public Room getById(Integer id) throws AppException {
 		return roomDAO.getById(id);
