@@ -38,30 +38,27 @@ public class JsonService extends HttpServlet {
 	 */
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
 		PrintWriter out = response.getWriter();
-		// out.write(getB());
-		// out.write(getA());
+
+		//TODO write down all params you use:
 		String entityName = (String) request.getParameter("json");
-		String oper = request.getParameter("oper");
+		String operation = (String) request.getParameter("oper");
+//		Integer id = Integer.parseInt(request.getParameter("id"));
+//		String roomName = (String) request.getParameter("roomName");
 
-		System.out.print("\noper:" + oper);
-		String id = (String) request.getParameter("id");
-
-		System.out.print("\nid:" + id);
-
+		
 		if (entityName.equals("hotels")) {
 			try {
 				out.write(new HotelServiceImpl().getJson(
 						new HotelServiceImpl().getAll(), "0"));
 			} catch (AppException e) {
-				// TODO Auto-generated catch block
+				// TODO Change to log.error
 				e.printStackTrace();
 			}
 			return;
 		} else if (entityName.equals("rooms")) {
-			if (oper != null) {
-				if (oper.equals("edit")) {
+			if (operation != null) {
+				if (operation.equals("edit")) {
 					Room room = new Room();
 					IpAddress ipAddr = new IpAddress();
 					@SuppressWarnings("unchecked")
@@ -69,10 +66,13 @@ public class JsonService extends HttpServlet {
 							.getParameterNames();
 					while (en.hasMoreElements()) {
 						String paramName = en.nextElement();
+						//TODO replace to if (paramName.equals("id")) {
+						//room.setId(id);
 						if (paramName.equals("id")) {
 							room.setId(Integer.parseInt(request
 									.getParameter(paramName)));
 						} else if (paramName.equals("roomName")) {
+							//TODO change to room.setRoomName(roomName); 
 							room.setRoomName(request.getParameter(paramName));
 						} else if (paramName.equals("subPackage")) {
 							SubscriptionPackage subscriptionPackage = new SubscriptionPackage();
@@ -85,7 +85,7 @@ public class JsonService extends HttpServlet {
 								ipAddr = new IpAddressServiceImpl()
 										.getByRoom(room);
 							} catch (AppException e) {
-								// TODO Auto-generated catch block
+								// TODO change to log.error
 								e.printStackTrace();
 							}
 							ipAddr.setIpAddress(request.getParameter(paramName));
@@ -96,11 +96,11 @@ public class JsonService extends HttpServlet {
 						new IpAddressServiceImpl().update(ipAddr);
 						new RoomServiceImpl().update(room);
 					} catch (AppException e) {
-						// TODO Auto-generated catch block
+						// TODO Change to log.error
 						e.printStackTrace();
 					}
 				}
-				if (oper.equals("del")) {
+				if (operation.equals("del")) {
 					Room room = new Room();
 					@SuppressWarnings("unchecked")
 					Enumeration<String> en = (Enumeration<String>) request
@@ -122,7 +122,12 @@ public class JsonService extends HttpServlet {
 						e.printStackTrace();
 					}
 				}
-				if (oper.equals("add")) {
+				if (operation.equals("add")) {
+					//TODO rewrite 
+					/**
+					 request.getParameter(paramName)
+					 * 
+					 */
 					Room room = new Room();
 					IpAddress ipAddress = new IpAddress();
 					@SuppressWarnings("unchecked")
@@ -157,11 +162,13 @@ public class JsonService extends HttpServlet {
 						ipAddress1.setRoom(room);
 						new IpAddressServiceImpl().update(ipAddress1);
 					} catch (Exception e) {
+						// TODO Change to log.error
 						e.printStackTrace();
 						if (ipAddress1 != null) {
 							try {
 								new IpAddressServiceImpl().delete(ipAddress1);
 							} catch (Exception ape) {
+								// TODO Change to log.error
 								ape.printStackTrace();
 							}
 						} throw new ServletException(e.getMessage());
@@ -178,6 +185,7 @@ public class JsonService extends HttpServlet {
 		} else if (entityName.equals("broadcaststreams")) {
 			String set = request.getParameter("set");
 			if (set.equals("all")) {
+				//TODO Change to log.debug
 				log.info("Processing BroadcastStreams ALL");
 				try {
 					List<BroadcastStream> blist = new BroadcastStreamServiceImpl()
@@ -198,6 +206,7 @@ public class JsonService extends HttpServlet {
 							blist, "0");
 					out.write(json);
 				} catch (AppException e) {
+					// TODO Change to log.error
 					e.printStackTrace();
 				}
 				return;
@@ -210,6 +219,7 @@ public class JsonService extends HttpServlet {
 							blist, "0");
 					out.write(json);
 				} catch (AppException e) {
+					// TODO Change to log.error
 					e.printStackTrace();
 				}
 				return;
@@ -222,6 +232,7 @@ public class JsonService extends HttpServlet {
 							blist, "0");
 					out.write(json);
 				} catch (AppException e) {
+					// TODO Change to log.error
 					e.printStackTrace();
 				}
 				return;
@@ -243,6 +254,7 @@ public class JsonService extends HttpServlet {
 				out.write(json);
 
 			} catch (AppException e) {
+				// TODO Change to log.error
 				e.printStackTrace();
 			}
 

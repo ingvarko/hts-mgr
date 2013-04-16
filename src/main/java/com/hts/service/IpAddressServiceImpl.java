@@ -47,8 +47,7 @@ public class IpAddressServiceImpl implements IIpAddressService {
 	}
 
 	@Override
-	public IpAddress create(String name) throws UnknownHostException,
-			AppException {
+	public IpAddress create(String name) throws AppException, UnknownHostException {
 
 		IpAddress ipAddress = getByIp(name);
 		if (ipAddress == null) {
@@ -59,8 +58,7 @@ public class IpAddressServiceImpl implements IIpAddressService {
 			log.info("created ipAddress: " + ipAddr.getIpAddress());
 			return ipAddr;
 		} else
-			throw new UnknownHostException("IP Address: " + name
-					+ " already exist");
+			throw new AppException("IP Address: " + name + " already exists");
 
 	}
 
