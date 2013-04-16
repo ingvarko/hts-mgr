@@ -2,3 +2,9 @@ com/**/*
 org/**/*
 .settings/**/*
 *.*~
+
+META-INF/.DS_Store
+
+.DS_Store
+
+*.class
